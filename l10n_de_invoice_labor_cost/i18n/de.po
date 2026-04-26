@@ -16,16 +16,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: l10n_de_invoice_labor_cost
-#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost
-msgid ""
-"<br/>\n"
-"                    Sales tax included:"
-msgstr ""
-"<br/>\n"
-"                    Darin enthaltene Umsatzsteuer:"
-
-#. module: l10n_de_invoice_labor_cost
-#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost
+#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost_note
 msgid "In the invoice amount of"
 msgstr "Im Rechnungsbetrag von"
 
@@ -42,15 +33,14 @@ msgid "Is Labor Cost Product"
 msgstr "Ist haushaltsnahe Dienstleistung"
 
 #. module: l10n_de_invoice_labor_cost
-#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost
-msgid ""
-"Labor costs (gross) included.\n"
-"                    <br/>\n"
-"                    Labor costs included (net):"
-msgstr ""
-"Lohnkosten (brutto) enthalten.\n"
-"                    <br/>\n"
-"                    Darin enthaltene Lohnkosten (netto):"
+#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost_note
+msgid "Labor costs (gross) included."
+msgstr "Lohnkosten (brutto) enthalten."
+
+#. module: l10n_de_invoice_labor_cost
+#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost_note
+msgid "Labor costs included (net):"
+msgstr "Darin enthaltene Lohnkosten (netto):"
 
 #. module: l10n_de_invoice_labor_cost
 #. odoo-python
@@ -59,12 +49,17 @@ msgid "Labor cost products cannot be of type 'Goods' or 'Combo'."
 msgstr "Haushaltsnahe Dienstleistungen können nicht vom Typ „Güter“ oder „Kombi“ sein."
 
 #. module: l10n_de_invoice_labor_cost
-#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost
+#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost_note
 msgid "Note according to §35a EStG:"
 msgstr "Hinweis gem. §35a EStG:"
 
 #. module: l10n_de_invoice_labor_cost
-#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost
+#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost_note
+msgid "Sales tax included:"
+msgstr "Darin enthaltene Umsatzsteuer:"
+
+#. module: l10n_de_invoice_labor_cost
+#: model_terms:ir.ui.view,arch_db:l10n_de_invoice_labor_cost.report_invoice_labor_cost_note
 msgid "are"
 msgstr "sind"
 
