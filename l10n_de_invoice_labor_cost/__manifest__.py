@@ -9,7 +9,7 @@
     "license": "AGPL-3",
     "author": "Ole Jancke, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/l10n-germany",
-    "depends": ["account"],
+    "depends": ["account", "account_edi_ubl_cii"],
     "data": [
         "views/product_template_views.xml",
         "report/report_invoice.xml",

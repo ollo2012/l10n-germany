@@ -179,3 +179,92 @@ class TestLaborCostProduct(BaseCommon):
 
         self.assertEqual(invoice.l10n_de_labor_cost_net, 250.0)
         self.assertGreaterEqual(invoice.l10n_de_labor_cost_gross, 250.0)
+
+    def _make_labor_invoice(self, narration=False):
+        return self.env["account.move"].create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner.id,
+                "narration": narration,
+                "invoice_line_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": self.labor_product.id,
+                            "quantity": 1,
+                            "price_unit": 100.0,
+                        },
+                    ),
+                ],
+            }
+        )
+
+    def test_07_note_text_present_when_labor_cost(self):
+        """Plain-text §35a note is generated when labor cost > 0."""
+        invoice = self._make_labor_invoice()
+        text = invoice._l10n_de_get_labor_cost_note_text()
+        self.assertIn("§35a", text)
+        self.assertIn("100", text)
+
+    def test_08_note_text_empty_without_labor_cost(self):
+        """No note text when there is no labor cost on the invoice."""
+        invoice = self.env["account.move"].create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner.id,
+                "invoice_line_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": self.consu_product.id,
+                            "quantity": 1,
+                            "price_unit": 50.0,
+                        },
+                    ),
+                ],
+            }
+        )
+        self.assertEqual(invoice._l10n_de_get_labor_cost_note_text(), "")
+
+    def test_09_facturx_included_note_contains_labor_text(self):
+        """Factur-X CII IncludedNote carries the §35a text via BT-22."""
+        invoice = self._make_labor_invoice()
+        vals = self.env["account.edi.xml.cii"]._get_exchanged_document_vals(invoice)
+        self.assertIn("§35a", vals["included_note"])
+
+    def test_10_facturx_included_note_preserves_narration(self):
+        """When narration is set, the §35a text is appended, not replacing it."""
+        invoice = self._make_labor_invoice(narration="<p>Thank you for your order</p>")
+        vals = self.env["account.edi.xml.cii"]._get_exchanged_document_vals(invoice)
+        self.assertIn("Thank you for your order", vals["included_note"])
+        self.assertIn("§35a", vals["included_note"])
+
+    def test_11_facturx_included_note_omits_text_without_labor_cost(self):
+        """Without labor cost, the §35a text is not added to IncludedNote."""
+        invoice = self.env["account.move"].create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner.id,
+                "invoice_line_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": self.consu_product.id,
+                            "quantity": 1,
+                            "price_unit": 50.0,
+                        },
+                    ),
+                ],
+            }
+        )
+        vals = self.env["account.edi.xml.cii"]._get_exchanged_document_vals(invoice)
+        self.assertNotIn("§35a", vals.get("included_note") or "")
+
+    def test_12_ubl_note_vals_contains_labor_note_entry(self):
+        """UBL note_vals list gets a separate cbc:Note entry for the §35a text."""
+        invoice = self._make_labor_invoice()
+        notes = self.env["account.edi.xml.ubl_20"]._get_note_vals_list(invoice)
+        self.assertTrue(any("§35a" in n.get("note", "") for n in notes))

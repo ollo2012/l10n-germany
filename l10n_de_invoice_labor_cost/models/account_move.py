@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import api, fields, models
+from odoo.tools import html2plaintext
 
 
 class AccountMove(models.Model):
@@ -39,3 +40,19 @@ class AccountMove(models.Model):
                 line.price_total - line.price_subtotal for line in labor_lines
             )
             move.l10n_de_labor_cost_gross = sum(labor_lines.mapped("price_total"))
+
+    def _l10n_de_get_labor_cost_note_text(self):
+        """Plain-text §35a EStG note for embedding in EN 16931 BT-22.
+
+        Renders the same QWeb block used in the PDF report so wording stays
+        in one place. Returns an empty string when there is no labor cost,
+        so callers can skip emitting an IncludedNote / cbc:Note.
+        """
+        self.ensure_one()
+        if not self.l10n_de_labor_cost_gross:
+            return ""
+        html = self.env["ir.qweb"]._render(
+            "l10n_de_invoice_labor_cost.report_invoice_labor_cost_note",
+            {"o": self},
+        )
+        return html2plaintext(html).strip()
